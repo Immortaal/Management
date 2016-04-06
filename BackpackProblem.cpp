@@ -7,8 +7,8 @@
 BackpackProblem::BackpackProblem()
 {
 	this->bag = Backpack();
-	this->amount_elements = 0;
-	this->elements = new Element[amount_elements]();
+	this->size = 0;
+	this->Merchandises = new Merchandise[size]();
 }
 
 
@@ -16,15 +16,15 @@ BackpackProblem::BackpackProblem()
 BackpackProblem::BackpackProblem(unsigned int s, unsigned int n)
 {
 	this->bag = Backpack(s);
-	this->amount_elements = n;
-	this->elements = new Element[amount_elements];
+	this->size = n;
+	this->Merchandises = new Merchandise[size];
 
 	srand(time(NULL));
-	for (int i = 0; i < amount_elements; i++)
+	for (int i = 0; i < size; i++)
 	{
 		unsigned int a = (rand() / 1000);
 		unsigned int b = (rand() / 1000);
-		elements[i] = Element(a, b);
+		Merchandises[i] = Merchandise(a, b);
 	}
 }
 
@@ -38,23 +38,23 @@ void BackpackProblem::displayResult()
 // odczyt danych z pliku
 void BackpackProblem::readFromFile()
 {
-	unsigned value, size, capacity;
+	unsigned purchaseCost, sellingPrice, availabeBudget;
 
 	fstream file;
 
 	try {
-		file.open("data.txt", std::ios::in);
-		file >> this->amount_elements;
-		file >> capacity;
+		file.open("ins_wp5.txt", std::ios::in);
+		file >> this->size;
+		file >> availabeBudget;
 
-		this->elements = new Element[amount_elements];
-		this->bag = Backpack(capacity);
+		this->Merchandises = new Merchandise[size];
+		this->bag = Backpack(availabeBudget);
 
-		for (unsigned i = 0; i < amount_elements; i++)
+		for (unsigned i = 0; i < size; i++)
 		{
-			file >> size;
-			file >> value;
-			elements[i] = Element(size, value);
+			file >> purchaseCost;
+			file >> sellingPrice;
+			Merchandises[i] = Merchandise(purchaseCost, sellingPrice);
 		}
 
 		file.close();
@@ -94,44 +94,47 @@ void BackpackProblem::writeToFile()
 // Algorytm oparty na programowaniu dynamicznym
 void BackpackProblem::dynamicAlgorithm()
 {
-	unsigned** bestTable = new unsigned*[amount_elements + 1]; // macierz na podproblemy o wymiarach: [amount_elements+1] x [bag.get_max_capacity()+1]
-	for (unsigned i = 0; i < amount_elements + 1; i++) 
+
+	//float
+	unsigned** bestTable = new unsigned*[size + 1]; // macierz na podproblemy o wymiarach: [amount_Merchandises+1] x [bag.get_max_capacity()+1]
+	for (unsigned i = 0; i < size + 1; i++)
 	{
-		bestTable[i] = new unsigned[bag.get_max_capacity() + 1];
+		bestTable[i] = new unsigned[bag.getTotalBudget() + 1];
 		//tworze iteracyjnie tabele
-		for (unsigned j = 0; j <= bag.get_max_capacity(); j++)
+		for (unsigned j = 0; j <= bag.getTotalBudget(); j++)
 		{
 			if (i == 0 || j == 0)  // pierwsza kolumne i pierwszy wiersz wypelniamy zerami
 			{
 				bestTable[i][j] = 0;
 			}
-	
-			else if (elements[i - 1].getSize() <= j)
+
+			else if (Merchandises[i - 1].getPurchaseCost() <= j)
 			{
-				unsigned int a = elements[i - 1].getValue() + bestTable[i - 1][j - elements[i - 1].getSize()];
+				unsigned int a = Merchandises[i - 1].getProfitOnSale() + bestTable[i - 1][j - Merchandises[i - 1].getPurchaseCost()];
 				unsigned int b = bestTable[i - 1][j];
 				bestTable[i][j] = max(a, b);
 			}
-			else 
+			else
 			{
 				bestTable[i][j] = bestTable[i - 1][j];
-			} 
+			}
 		}
 	}
 
 	//szukam wartosci w tablicy
-	unsigned w = bag.get_max_capacity();
-	for (unsigned i = amount_elements; i > 0; i--) 
+	unsigned w = bag.getTotalBudget();
+
+	for (unsigned i = size; i > 0; i--)
 	{
 		if (bestTable[i][w] != bestTable[i - 1][w]) 
 		{
-			bag.addElement(&elements[i - 1]); // dodanie elementu do plecaka
-			w -= elements[i - 1].getSize();
+			bag.addMerchandise(&Merchandises[i - 1]); 
+			w -= (unsigned)Merchandises[i - 1].getPurchaseCost();
 		}
 	} 
 
 	// usuwanie macierzy
-	for (unsigned i = 0; i < amount_elements; i++) 
+	for (unsigned i = 0; i < size; i++)
 	{
 		delete[] bestTable[i];
 	}

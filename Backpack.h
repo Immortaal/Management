@@ -1,7 +1,7 @@
 #pragma once
 #include <time.h>
 #include <iostream>
-#include "Element.h"
+#include "Merchandise.h"
 #include <vector>
 using namespace std;
 
@@ -9,16 +9,16 @@ using namespace std;
 class Backpack
 {
 private:
-	unsigned int max_capacity;
-	unsigned int curr_capacity;
-	unsigned int values;
-	vector<Element *> collection;
+	unsigned totalBudget;
+	unsigned budgetUsed;
+	float profit;
+	vector<Merchandise *> collection;
 
 public:
 	Backpack();
 	Backpack(unsigned int c);
-	void addElement(Element* e);
-	unsigned int get_max_capacity() { return this->max_capacity; }
+	void addMerchandise(Merchandise* e);
+	unsigned getTotalBudget() { return this->totalBudget; }
 	void displayContents();
 	~Backpack();
 };
