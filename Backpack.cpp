@@ -4,17 +4,17 @@
 
 Backpack::Backpack()
 {
-	this->max_capacity = 0;
-	this->curr_capacity = 0;
-	this->values = 0;
+	this->availabeBudget = 0;
+	this->budgetUsed = 0;
+	this->profit = 0;
 	this->collection = vector<Element *>();
 }
 
 Backpack::Backpack(unsigned int c)
 {
-	this->max_capacity = c;
-	this->curr_capacity = 0;
-	this->values = 0;
+	this->availabeBudget = c;
+	this->budgetUsed = 0;
+	this->profit = 0;
 	this->collection = vector<Element *>();
 }
 
@@ -24,15 +24,15 @@ Backpack::~Backpack() {}
 void Backpack::addElement(Element* e)
 {
 	collection.push_back(e);
-	this->curr_capacity += e->getSize();
-	this->values += e->getValue();
+	this->budgetUsed += e->getPurchaseCost();
+	this->profit += e->getProfitOnSale();
 }
 
 void Backpack::displayContents()
 {
-	cout << "Maksymalna waga plecaka to " << this->get_max_capacity() << endl;
-	cout << "Aktualna waga plecaka to  " << this->curr_capacity << endl;
-	cout << "Suma wartosci w plecaku to " << this->values << endl;
-	cout << "Ilosc przedmiotow w plecaku to " << this->collection.size() << endl;
+	cout << "Maksymalna bud¿et to " << this->availabeBudget << endl;
+	cout << "Wydano dotychczas " << this->budgetUsed << endl;
+	cout << "Suma ze sprzeda¿y " << this->profit << endl;
+	cout << "Ilosc sprzedanych przedmiotów " << this->collection.size() << endl;
 	system("pause");
 }

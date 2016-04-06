@@ -5,16 +5,21 @@ Klasa reprezentuj¹ca pojedynczy element wkladany do plecaka
 class Element
 {
 private:
-	unsigned size; // waga elementu
-	unsigned value; // wartosc elementu
-	float factor; //wspolczynnik elementu
+//PurchaseCost, ProfitOnSale,  sellingPrice
+
+	float purchaseCost;		//Koszt zakupu
+	float sellingPrice;		//Cena przy sprzeda¿y
+	float profitOnSale;		//Zarobek ze sprzeda¿y
+
 public:
 	Element();
-	Element(unsigned int s, unsigned int v);
+	Element(float s, float v);
 	~Element();
-	unsigned getSize();
-	unsigned getValue();
-	float getFactor();
+
+	float getPurchaseCost() const { return this->purchaseCost; }
+	float getSellingPrice() const { return this->sellingPrice; }
+	float getProfitOnSale() const { return this->profitOnSale; }
+
 };
 
 
