@@ -1,0 +1,15 @@
+﻿  stdafx.cpp
+  PEA_lab2.cpp
+  Measure.cpp
+  Element.cpp
+c:\magazyn\beti\polibuda\semestr v\pea\pea_lab2\pea_lab2\pea_lab2\pea_lab2\element.cpp(18): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
+  BackpackProblem.cpp
+c:\magazyn\beti\polibuda\semestr v\pea\pea_lab2\pea_lab2\pea_lab2\pea_lab2\backpackproblem.cpp(22): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\magazyn\beti\polibuda\semestr v\pea\pea_lab2\pea_lab2\pea_lab2\pea_lab2\backpackproblem.cpp(23): warning C4018: '<': signed/unsigned mismatch
+c:\magazyn\beti\polibuda\semestr v\pea\pea_lab2\pea_lab2\pea_lab2\pea_lab2\backpackproblem.cpp(72): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\magazyn\beti\polibuda\semestr v\pea\pea_lab2\pea_lab2\pea_lab2\pea_lab2\backpackproblem.cpp(77): warning C4018: '<': signed/unsigned mismatch
+c:\magazyn\beti\polibuda\semestr v\pea\pea_lab2\pea_lab2\pea_lab2\pea_lab2\backpackproblem.cpp(106): warning C4800: 'uint64_t': forcing value to bool 'true' or 'false' (performance warning)
+c:\magazyn\beti\polibuda\semestr v\pea\pea_lab2\pea_lab2\pea_lab2\pea_lab2\backpackproblem.cpp(123): warning C4800: 'uint64_t': forcing value to bool 'true' or 'false' (performance warning)
+  Backpack.cpp
+  Generating Code...
+  PEA_lab2.vcxproj -> C:\magazyn\Beti\polibuda\Semestr V\PEA\pea_lab2\pea_lab2\PEA_lab2\Debug\PEA_lab2.exe
