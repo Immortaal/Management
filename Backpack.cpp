@@ -4,24 +4,24 @@
 
 Backpack::Backpack()
 {
-	this->availabeBudget = 0;
+	this->totalBudget = 0;
 	this->budgetUsed = 0;
 	this->profit = 0;
-	this->collection = vector<Element *>();
+	this->collection = vector<Merchandise *>();
 }
 
 Backpack::Backpack(unsigned int c)
 {
-	this->availabeBudget = c;
+	this->totalBudget = c;
 	this->budgetUsed = 0;
 	this->profit = 0;
-	this->collection = vector<Element *>();
+	this->collection = vector<Merchandise *>();
 }
 
 
 Backpack::~Backpack() {}
 
-void Backpack::addElement(Element* e)
+void Backpack::addMerchandise(Merchandise* e)
 {
 	collection.push_back(e);
 	this->budgetUsed += e->getPurchaseCost();
@@ -30,7 +30,7 @@ void Backpack::addElement(Element* e)
 
 void Backpack::displayContents()
 {
-	cout << "Maksymalna bud¿et to " << this->availabeBudget << endl;
+	cout << "Maksymalna bud¿et to " << this->totalBudget << endl;
 	cout << "Wydano dotychczas " << this->budgetUsed << endl;
 	cout << "Suma ze sprzeda¿y " << this->profit << endl;
 	cout << "Ilosc sprzedanych przedmiotów " << this->collection.size() << endl;

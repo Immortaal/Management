@@ -2,7 +2,7 @@
 #include <random>
 #include <stdint.h>
 #include <algorithm>
-#include "Element.h"
+#include "Merchandise.h"
 #include "Backpack.h"
 #include <iostream>
 #include <time.h>
@@ -14,13 +14,14 @@ class BackpackProblem
 {
 private:
 	Backpack bag;
-	Element* elements;			// tablica wszystkich elementow
-	unsigned amount_elements;   // liczba elementow
+	Merchandise* Merchandises;			// tablica wszystkich towrów
+	unsigned size;   // liczba towarów
 
 public:
 	BackpackProblem();
 	BackpackProblem(unsigned int s, unsigned int n);
 	~BackpackProblem();
+
 	void readFromFile();
 	void writeToFile();
 	void displayResult();
