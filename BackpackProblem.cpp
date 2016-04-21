@@ -43,7 +43,7 @@ void BackpackProblem::readFromFile()
 	fstream file;
 
 	try {
-		file.open("ins_wp5.txt", std::ios::in);
+		file.open("data.txt", std::ios::in);
 		file >> this->size;
 		file >> availabeBudget;
 
@@ -87,6 +87,44 @@ void BackpackProblem::writeToFile()
 	{
 		cout << "Nie uda³o sie zapisaæ do pliku!";
 		file.close();
+	}
+}
+
+//Algorytm typu "Brute force"
+void BackpackProblem::bruteForce()
+{
+	uint64_t table = 1;
+	uint64_t bestTable = 0; //zapisuje na 64 bitowym polu - 1 bit reprezentuje 1 rzecz
+	uint64_t endOfTable = (table << size);
+	unsigned bestValue = 0;
+	while (table < endOfTable) { //dopoki mamy mozliwosc
+		uint64_t tmp = 1;
+		unsigned tmpValue = 0;
+		unsigned tmpWeight = 0; //dodajemy rzeczy, gdy ich bity sa w stanie wysokim
+		for (unsigned i = 0; i < size; i++) {
+			bool isSet = table & tmp;
+			if (isSet) {
+				tmpWeight += Merchandises[i].getPurchaseCost();
+				tmpValue += Merchandises[i].getProfitOnSale();
+			}
+			tmp = tmp << 1;
+		}
+		//sprawdzamy czy lepszy
+		if (tmpWeight <= bag.getTotalBudget() && tmpValue > bestValue) {
+			bestTable = table;
+			bestValue = tmpValue;
+		}
+		table += 1;
+	}
+	//przepisujemy graf
+	uint64_t tmp = 1;
+	for (unsigned i = 0; i < size; i++) {
+		bool isSet = bestTable & tmp;
+		if (isSet)
+		{
+			bag.addMerchandise(&Merchandises[i]);
+		}
+		tmp = tmp << 1; //przesuwamy maske
 	}
 }
 

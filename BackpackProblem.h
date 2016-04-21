@@ -26,6 +26,7 @@ public:
 	void writeToFile();
 	void displayResult();
 	void dynamicAlgorithm();
+	void bruteForce();
 };
 
 

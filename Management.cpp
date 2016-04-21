@@ -11,7 +11,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	//pr.writeToFile();
 	pr.readFromFile();
 	pr.displayResult();
-	pr.dynamicAlgorithm();
+	pr.bruteForce();
 	pr.displayResult();
 	cout << "done" << endl;
 	system("pause");
