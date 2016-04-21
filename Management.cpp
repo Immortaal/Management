@@ -8,7 +8,10 @@
 int _tmain(int argc, _TCHAR* argv[])
 {
 	BackpackProblem pr = BackpackProblem();
-	pr.writeToFile();
+	//pr.writeToFile();
+	pr.readFromFile();
+	pr.approxAlgorithm();
+	pr.displayResult();
 	cout << "done" << endl;
 	system("pause");
 	return 0;

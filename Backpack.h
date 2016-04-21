@@ -21,6 +21,11 @@ public:
 	unsigned int get_max_capacity() { return this->max_capacity; }
 	void displayContents();
 	~Backpack();
+
+	Element * elementAt(int index);
+	vector<Element* > getCollection() { return collection; }
+	unsigned int maxValue();
+	unsigned int numberOfProducts() { return collection.size(); }
 };
 
 

@@ -36,3 +36,24 @@ void Backpack::displayContents()
 	cout << "Ilosc przedmiotow w plecaku to " << this->collection.size() << endl;
 	system("pause");
 }
+
+unsigned int Backpack::maxValue()
+{
+	unsigned int maxVal = 0;
+
+	for (int i = 0; i < collection.size(); i++)
+	{
+		if (collection[i]->getValue() > maxVal)
+		{
+			maxVal = collection[i]->getValue();
+		}
+	}
+
+	return maxVal;
+
+}
+
+Element *Backpack::elementAt(int index)
+{
+	return collection[index];
+}

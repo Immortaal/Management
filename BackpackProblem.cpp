@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "BackpackProblem.h"
 #include <fstream>
 
@@ -43,7 +43,7 @@ void BackpackProblem::readFromFile()
 	fstream file;
 
 	try {
-		file.open("data.txt", std::ios::in);
+		file.open("dane.txt", std::ios::in);
 		file >> this->amount_elements;
 		file >> capacity;
 
@@ -52,15 +52,16 @@ void BackpackProblem::readFromFile()
 
 		for (unsigned i = 0; i < amount_elements; i++)
 		{
-			file >> size;
 			file >> value;
+			file >> size;
+			
 			elements[i] = Element(size, value);
 		}
 
 		file.close();
 	}
 	catch (exception e) {
-		cout << "Nie uda³o sie wczytaæ pliku!";
+		cout << "Nie udaÅ‚o sie wczytaÄ‡ pliku!";
 		file.close();
 	}
 }
@@ -85,7 +86,7 @@ void BackpackProblem::writeToFile()
 	}
 	catch (exception e)
 	{
-		cout << "Nie uda³o sie zapisaæ do pliku!";
+		cout << "Nie udaÅ‚o sie zapisaÄ‡ do pliku!";
 		file.close();
 	}
 }
@@ -141,4 +142,91 @@ void BackpackProblem::dynamicAlgorithm()
 
 BackpackProblem::~BackpackProblem()
 {
+}
+
+
+void BackpackProblem::approxAlgorithm()
+{
+
+	unsigned int pMax = 0;
+
+	for (int i = 0; i < amount_elements; i++)
+	{
+		if (elements[i].getValue() > pMax) pMax = elements[i].getValue();
+	}
+
+	double scaleK = (0.1 * pMax) / amount_elements;
+
+	Element *scaledCollection = new Element[amount_elements];
+
+	for (int i = 0; i < amount_elements; i++)
+	{
+		int itemValue = elements[i].getValue();
+		int value = (int)floor((double)itemValue / scaleK);
+		scaledCollection[i] = Element(elements[i].getSize(), value);
+	}
+
+	pMax = 0;
+
+	for (int i = 0; i < amount_elements; i++)
+	{
+		if (scaledCollection[i].getValue() > pMax) pMax = scaledCollection[i].getValue();
+	}
+
+	unsigned int **bestMatrix = new unsigned int *[amount_elements + 1];
+	for (int i = 0; i < amount_elements + 1; i++)
+	{
+		bestMatrix[i] = new unsigned int[amount_elements * pMax];
+	}
+
+	for (int k = 0; k < amount_elements; k++) bestMatrix[k][0] = 0;
+	for (int y = 0; y < amount_elements * pMax; y++) bestMatrix[0][y] = UINT_MAX;
+
+	unsigned int y = 0;
+	unsigned int profit = 0;
+	unsigned int pk = 0;
+	unsigned int wk = 0;
+
+	do
+	{
+		y++;
+		for (int k = 1; k <= amount_elements; k++)
+		{
+			Element element = scaledCollection[k - 1];
+			pk = element.getValue();
+			wk = element.getSize();
+
+			if (y - element.getValue() < 0 || bestMatrix[k - 1][y - pk] == UINT_MAX)
+			{
+				bestMatrix[k][y] = bestMatrix[k - 1][y];
+			}
+			else
+			{
+					
+				unsigned int value1 = bestMatrix[k - 1][y];
+				unsigned int value2 = bestMatrix[k - 1][y - pk] + wk;
+
+				if (value1 < value2) bestMatrix[k][y] = value1;
+				else
+					bestMatrix[k][y] = value2;
+			}
+
+			if (bestMatrix[k][y] <= bag.get_max_capacity()) profit = y;
+		}
+	} while (y < amount_elements * pMax);
+
+	cout << profit * scaleK;
+
+
+	//szukam wartosci w tablicy
+	unsigned w = bag.get_max_capacity();
+	for (unsigned i = amount_elements; i > 0; i--)
+	{
+		if (bestMatrix[i][w] != bestMatrix[i - 1][w])
+		{
+			bag.addElement(&elements[i - 1]); // dodanie elementu do plecaka
+			w -= scaledCollection[i - 1].getSize();
+		}
+	}
+
 }
