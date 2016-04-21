@@ -215,18 +215,17 @@ void BackpackProblem::approxAlgorithm()
 		}
 	} while (y < amount_elements * pMax);
 
-	cout << profit * scaleK;
+	cout << "Szacowany zysk: " << (unsigned int)(profit * scaleK) << endl;
 
-
-	//szukam wartosci w tablicy
-	unsigned w = bag.get_max_capacity();
-	for (unsigned i = amount_elements; i > 0; i--)
-	{
-		if (bestMatrix[i][w] != bestMatrix[i - 1][w])
-		{
-			bag.addElement(&elements[i - 1]); // dodanie elementu do plecaka
-			w -= scaledCollection[i - 1].getSize();
-		}
-	}
+	////szukam wartosci w tablicy
+	//unsigned w = bag.get_max_capacity();
+	//for (unsigned i = amount_elements; i > 0; i--)
+	//{
+	//	if (bestMatrix[i][w] != bestMatrix[i - 1][w])
+	//	{
+	//		bag.addElement(&scaledCollection[i - 1]);
+	//		w -= elements[i - 1].getSize();
+	//	}
+	//}
 
 }

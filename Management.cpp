@@ -11,8 +11,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	//pr.writeToFile();
 	pr.readFromFile();
 	pr.approxAlgorithm();
-	pr.displayResult();
-	cout << "done" << endl;
+//	pr.displayResult();
+	//cout << "done" << endl;
 	system("pause");
 	return 0;
 }
