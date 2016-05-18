@@ -27,6 +27,7 @@ public:
 
 	void dynamicAlgorithm();
 	void approxAlgorithm();
+	void bruteForce();
 };
 
 
