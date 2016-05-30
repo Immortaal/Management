@@ -1,40 +1,27 @@
-#include "stdafx.h"
 #include "Element.h"
 
-// konstruktor domyslny
-Element::Element()
+
+Element::Element(unsigned int weight, unsigned int value) : weight(weight),
+    value(value)
 {
-	this->size = 0;
-	this->value = 0;
-	this->factor = 0;
+	factor = value / weight;
 }
 
-
-// argumenty konstruktora: s- waga elementu, v- wartosc elementu
-Element::Element(unsigned int s, unsigned int v)
-{
-	this->size = s;
-	this->value = v;
-	this->factor = value / size; // wspolczynnik danego elementu wyliczany jako stosunek wartosci do wagi
-}
-
+Element::Element() {}
 
 Element::~Element() {}
 
-// funkcja zwracajaca wage danego elementu
-unsigned Element::getSize()
+const unsigned Element::getWeight()
 {
-	return this->size;
+	return weight;
 }
 
-// funkcja zwracajaca wartosc danego elementu
-unsigned Element::getValue()
+const unsigned Element::getValue()
 {
-	return this->value;
+	return value;
 }
 
-// funkcja zwracajaca wspolczynnik danego elementu
-float Element::getFactor()
+const float Element::getFactor()
 {
-	return this->factor;
+	return factor;
 }

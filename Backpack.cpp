@@ -1,43 +1,32 @@
-#include "stdafx.h"
 #include "Backpack.h"
 
 
-Backpack::Backpack()
-{
-	this->max_capacity = 0;
-	this->curr_capacity = 0;
-	this->values = 0;
-	this->collection = vector<Element *>();
-}
+Backpack::Backpack() : collection(vector<Element *>())
+{}
 
-Backpack::Backpack(unsigned int c)
-{
-	this->max_capacity = c;
-	this->curr_capacity = 0;
-	this->values = 0;
-	this->collection = vector<Element *>();
-}
-
+Backpack::Backpack(unsigned int capacity) : max_capacity(capacity),
+    collection(vector<Element *>())
+{}
 
 Backpack::~Backpack() {}
 
-void Backpack::addElement(Element* e)
+void Backpack::addElement(Element* element)
 {
-	collection.push_back(e);
-	this->curr_capacity += e->getSize();
-	this->values += e->getValue();
+	collection.push_back(element);
+	curr_capacity += element->getWeight();
+	values += element->getValue();
 }
 
-void Backpack::displayContents()
+void Backpack::displayContent()
 {
-	cout << "Maksymalna waga plecaka to " << this->get_max_capacity() << endl;
+	cout << "Maksymalna waga plecaka to " << this->getMaxCapacity() << endl;
 	cout << "Aktualna waga plecaka to  " << this->curr_capacity << endl;
 	cout << "Suma wartosci w plecaku to " << this->values << endl;
 	cout << "Ilosc przedmiotow w plecaku to " << this->collection.size() << endl;
-	system("pause");
+	//system("pause");
 }
 
-unsigned int Backpack::maxValue()
+const unsigned int Backpack::maxValue()
 {
 	unsigned int maxVal = 0;
 

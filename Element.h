@@ -1,20 +1,20 @@
 #pragma once
 /*
-Klasa reprezentuj¹ca pojedynczy element wkladany do plecaka
+Backpack's element representation
 */
 class Element
 {
 private:
-	unsigned size; // waga elementu
-	unsigned value; // wartosc elementu
-	float factor; //wspolczynnik elementu
+	unsigned weight = 0;
+	unsigned value = 0;
+	float factor = 0;
 public:
 	Element();
-	Element(unsigned int s, unsigned int v);
+	Element(unsigned int weight, unsigned int value);
 	~Element();
-	unsigned getSize();
-	unsigned getValue();
-	float getFactor();
+	const unsigned getWeight();
+	const unsigned getValue();
+	const float getFactor();
 };
 
 

@@ -9,14 +9,13 @@
 
 using namespace std;
 
-
-// Klasa reprezentuj¹ca problem plecakowy i algorytmy stworzone do jego rozwiazania
+//BackpackProblem structure and solution alorithms
 class BackpackProblem
 {
 private:
 	Backpack bag;
-	Element* elements; // tablica wszystkich elementow
-	unsigned amount_elements; // liczba elementow
+    std::vector<Element> elements;
+    unsigned elementCount;
 public:
 	BackpackProblem();
 	BackpackProblem(unsigned int s, unsigned int n);
