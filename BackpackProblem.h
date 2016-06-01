@@ -27,6 +27,11 @@ public:
 	void dynamicAlgorithm();
 	void approxAlgorithm();
 	void bruteForce();
+
+    int p_max(int val[], int n);
+    int pp_max();
+    int algorytm_dokladny(int p_max, std::vector<int>& wartosci);
+    int skalowanie();
 };
 
 

@@ -33,7 +33,7 @@ void BackpackProblem::readFromFile()
 	fstream file;
 
 	try {
-		file.open("dane.txt", std::ios::in);
+		file.open("dane4.txt", std::ios::in);
 		file >> this->elementCount;
 		file >> capacity;
 
@@ -85,10 +85,13 @@ void BackpackProblem::writeToFile()
 // Algorytm oparty na programowaniu dynamicznym
 void BackpackProblem::dynamicAlgorithm()
 {
-	unsigned** bestTable = new unsigned*[elementCount + 1]; // macierz na podproblemy o wymiarach: [amount_elements+1] x [bag.get_max_capacity()+1]
-	for (unsigned i = 0; i < elementCount + 1; i++)
+	//unsigned** bestTable = new unsigned*[elementCount + 1]; // macierz na podproblemy o wymiarach: [amount_elements+1] x [bag.get_max_capacity()+1]
+	std::vector < std::vector<unsigned> > bestTable(elementCount + 1);
+
+    for (unsigned i = 0; i < elementCount + 1; i++)
 	{
-		bestTable[i] = new unsigned[bag.getMaxCapacity() + 1];
+		//bestTable[i] = new unsigned[bag.getMaxCapacity() + 1];
+        bestTable[i] = std::vector<unsigned>(bag.getMaxCapacity() + 1);
 		//tworze iteracyjnie tabele
 		for (unsigned j = 0; j <= bag.getMaxCapacity(); j++)
 		{
@@ -122,17 +125,103 @@ void BackpackProblem::dynamicAlgorithm()
 	}
 
 	// usuwanie macierzy
-	for (unsigned i = 0; i < elementCount; i++)
-	{
-		delete[] bestTable[i];
-	}
-	delete bestTable;
+	//for (unsigned i = 0; i < elementCount; i++)
+	//{
+	//	delete[] bestTable[i];
+	//}
+	//delete bestTable;
 }
 
 
 BackpackProblem::~BackpackProblem()
 {
 }
+
+int BackpackProblem::p_max(int val[], int n)
+{
+	int p_max = val[0];
+	for (int i = 0; i < n; i++)
+	{
+		if (val[i] > p_max)
+		{
+			p_max = val[i];
+		}
+	}
+	return p_max;
+}
+
+int BackpackProblem::algorytm_dokladny(int p_max, std::vector<int>& wartosci)
+{
+	int **F = new int *[elementCount + 1]; // tworzenie tablicy dwuwymiarowej dla funkcji F
+	int wynik = 0;
+    int W = bag.getMaxCapacity();
+
+	for (int k = 0; k<(elementCount + 1); k++)
+	{
+		F[k] = new int[elementCount*p_max]; // zapelnianie kazdego wiersza - inicjacja tablicy
+		F[k][0] = 0;
+	}
+
+	for (int y = 1; y <= elementCount*p_max; y++)
+	{
+		F[0][y] = std::numeric_limits<unsigned int>::max();
+
+	}
+
+	for (int k = 1; k <= elementCount; k++)
+		for (int y = 1; y <= elementCount*p_max; y++)
+		{
+			if (y - wartosci[k - 1] < 0 || F[k - 1][y - wartosci[k - 1]] == std::numeric_limits<unsigned int>::max())
+			{
+				F[k][y] = F[k - 1][y];
+			}
+
+			else
+			{
+				F[k][y] = min((unsigned)F[k - 1][y], F[k - 1][y - wartosci[k - 1]] + elements[k - 1].getWeight());
+			}
+
+			if (F[elementCount][y] <= W)
+			{
+				wynik = y;
+			}
+		}
+
+	return wynik;
+}
+
+int BackpackProblem::pp_max() {
+    int max = elements[0].getValue();
+	for (int i = 0; i < elementCount; i++)
+	{
+		if (elements[i].getValue() > max)
+		{
+			max = elements[i].getValue();
+		}
+	}
+	return max;
+}
+
+int BackpackProblem::skalowanie()
+{
+    double blad = 0.1;
+	double K = (blad * pp_max()) / (float)elementCount;
+	if (K < 1)
+	{
+		K = 1;
+	}
+
+    std::vector<int> wartosci(elementCount);
+	for (int i = 0; i < elementCount; i++)
+	{
+		wartosci[i] = floor(elements[i].getValue() / K);
+	}
+
+	int p_max = floor(pp_max() / K) + 1;
+
+	return (K * algorytm_dokladny(p_max, wartosci));
+}
+
 
 
 void BackpackProblem::approxAlgorithm()
@@ -148,7 +237,8 @@ void BackpackProblem::approxAlgorithm()
 
 	double scaleK = (0.1 * pMax) / elementCount;
 
-	Element *scaledCollection = new Element[elementCount];
+	//Element *scaledCollection = new Element[elementCount];
+    std::vector<Element> scaledCollection(elementCount);
 
 	for (int i = 0; i < elementCount; i++)
 	{
@@ -164,20 +254,23 @@ void BackpackProblem::approxAlgorithm()
 		if (scaledCollection[i].getValue() > pMax) pMax = scaledCollection[i].getValue();
 	}
 
-	unsigned int **bestMatrix = new unsigned int *[elementCount + 1];
+	//unsigned int **bestMatrix = new unsigned int *[elementCount + 1];
+    std::vector< std::vector<unsigned> > bestMatrix(elementCount +1);
 	for (int i = 0; i < elementCount + 1; i++)
 	{
-		bestMatrix[i] = new unsigned int[elementCount * pMax];
+		//bestMatrix[i] = new unsigned int[elementCount * pMax];
+        bestMatrix[i] = std::vector<unsigned>(elementCount * pMax);
 	}
 
 	for (int k = 0; k < elementCount; k++) bestMatrix[k][0] = 0;
 	for (int y = 0; y < elementCount * pMax; y++) bestMatrix[0][y] = std::numeric_limits<unsigned int>::max();
 
-	unsigned int y = 0;
+	int y = 0;
 	unsigned int profit = 0;
-	unsigned int pk = 0;
+	int pk = 0;
 	unsigned int wk = 0;
 
+    std::cout << "before loop!" << std::endl;
 	do
 	{
 		y++;
@@ -187,20 +280,24 @@ void BackpackProblem::approxAlgorithm()
 			pk = element.getValue();
 			wk = element.getWeight();
 
-			if (y - element.getValue() < 0 || bestMatrix[k - 1][y - pk] == std::numeric_limits<unsigned int>::max())
-			{
-				bestMatrix[k][y] = bestMatrix[k - 1][y];
-			}
-			else
-			{
+            if (5 > 10) {
+            } else {
+                if (y - element.getValue() < 0 || bestMatrix[k - 1][std::max(0, y - pk)] == std::numeric_limits<unsigned int>::max())
+                {
+                    bestMatrix[k][y] = bestMatrix[k - 1][y];
+                }
+                else
+                {
 
-				unsigned int value1 = bestMatrix[k - 1][y];
-				unsigned int value2 = bestMatrix[k - 1][y - pk] + wk;
+                    unsigned int value1 = bestMatrix[k - 1][y];
+                    unsigned int value2 = bestMatrix[k - 1][y - pk] + wk;
 
-				if (value1 < value2) bestMatrix[k][y] = value1;
-				else
-					bestMatrix[k][y] = value2;
-			}
+                    if (value1 < value2) bestMatrix[k][y] = value1;
+                    else
+                        bestMatrix[k][y] = value2;
+                }
+            }
+
 
 			if (bestMatrix[k][y] <= bag.getMaxCapacity()) profit = y;
 		}
