@@ -20,6 +20,8 @@ private:
 public:
 	BackpackProblem();
 	BackpackProblem(unsigned int s, unsigned int n);
+	BackpackProblem(const BackpackProblem & backpackProblem);
+
 	~BackpackProblem();
 	void readFromFile();
 	void writeToFile();

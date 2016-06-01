@@ -28,6 +28,17 @@ BackpackProblem::BackpackProblem(unsigned int s, unsigned int n)
 	}
 }
 
+BackpackProblem::BackpackProblem(const BackpackProblem & backpackProblem)
+{
+	this->bag = backpackProblem.bag;
+	this->amount_elements = backpackProblem.amount_elements;
+	elements = new Element[amount_elements];
+	for (int i = 0; i < amount_elements; i++){
+		elements[i] = backpackProblem.elements[i];
+	}
+	
+}
+
 // funkcja wyswietlajaca rezultaty dzialania algorytmu
 void BackpackProblem::displayResult()
 {
