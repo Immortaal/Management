@@ -45,6 +45,10 @@ void BackpackProblem::displayResult()
 	bag.displayContents();
 }
 
+string BackpackProblem::results(){
+	return bag.results();
+}
+
 
 // odczyt danych z pliku
 void BackpackProblem::readFromFile()
@@ -156,7 +160,7 @@ BackpackProblem::~BackpackProblem()
 }
 
 
-void BackpackProblem::approxAlgorithm()
+unsigned int BackpackProblem::approxAlgorithm()
 {
 
 	unsigned int pMax = 0;
@@ -226,18 +230,7 @@ void BackpackProblem::approxAlgorithm()
 		}
 	} while (y < amount_elements * pMax);
 
-	cout << "Szacowany zysk: " << (unsigned int)(profit * scaleK) << endl;
-
-	////szukam wartosci w tablicy
-	//unsigned w = bag.get_max_capacity();
-	//for (unsigned i = amount_elements; i > 0; i--)
-	//{
-	//	if (bestMatrix[i][w] != bestMatrix[i - 1][w])
-	//	{
-	//		bag.addElement(&scaledCollection[i - 1]);
-	//		w -= elements[i - 1].getSize();
-	//	}
-	//}
+	return (unsigned int)(profit * scaleK);
 
 }
 

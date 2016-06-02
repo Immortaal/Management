@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Element.h"
 #include <vector>
+#include <string>
 using namespace std;
 
 
@@ -20,6 +21,7 @@ public:
 	void addElement(Element* e);
 	unsigned int get_max_capacity() { return this->max_capacity; }
 	void displayContents();
+	string results();
 	~Backpack();
 
 	Element * elementAt(int index);

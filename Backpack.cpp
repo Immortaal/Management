@@ -36,6 +36,16 @@ void Backpack::displayContents()
 	cout << "Ilosc przedmiotow w plecaku to " << this->collection.size() << endl;
 }
 
+string Backpack::results()
+{
+	string result = "";
+	result += "Maksymalna waga plecaka to " + to_string(this->get_max_capacity());
+	result += "\nAktualna waga plecaka to  " + to_string(this->curr_capacity);
+	result += "\nSuma wartosci w plecaku to " + to_string(this->values);
+	result += "\nIlosc przedmiotow w plecaku to " + to_string(this->collection.size());
+	return result;
+}
+
 unsigned int Backpack::maxValue()
 {
 	unsigned int maxVal = 0;

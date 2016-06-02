@@ -6,6 +6,8 @@
 #include "Backpack.h"
 #include <iostream>
 #include <time.h>
+#include <string>
+
 
 using namespace std;
 
@@ -26,9 +28,10 @@ public:
 	void readFromFile();
 	void writeToFile();
 	void displayResult();
+	string results();
 
 	void dynamicAlgorithm();
-	void approxAlgorithm();
+	unsigned int approxAlgorithm();
 	void bruteForce();
 };
 
