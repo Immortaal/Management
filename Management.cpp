@@ -25,6 +25,10 @@ std::vector<long long> bruteTimes;
 std::vector<long long> dynamicTimes;
 std::vector<long long> aproxTimes;
 
+std::vector<string> bruteResults;
+std::vector<string> dynamicResults;
+std::vector<string> aproxResults;
+
 int threads;
 
 void threadFinished()
@@ -54,20 +58,10 @@ void bruteSave(long long duration)
 
 }
 
-
 void bruteSaveResults(std::string data)
 {
 	std::unique_lock<std::mutex> lock(mtx);
-	try {
-		bruteFileResults.open("bruteResults.txt", std::ios::app);
-
-		bruteFileResults << data << endl;
-		bruteFileResults.close();
-	}
-	catch (exception e)
-	{
-		bruteFileResults.close();
-	}
+	bruteResults.push_back(data);
 
 }
 
@@ -92,16 +86,7 @@ void dynamicSave(long long duration){
 void dynamicSaveResults(std::string data)
 {
 	std::unique_lock<std::mutex> lock(mtx);
-	try {
-		dynamicFileResults.open("dynamicResults.txt", std::ios::app);
-
-		dynamicFileResults << data << endl;
-		dynamicFileResults.close();
-	}
-	catch (exception e)
-	{
-		dynamicFileResults.close();
-	}
+	dynamicResults.push_back(data);
 
 }
 
@@ -126,16 +111,7 @@ void aproxSave(long long duration){
 void aproxSaveResults(std::string data)
 {
 	std::unique_lock<std::mutex> lock(mtx);
-	try {
-		aproxFileResults.open("aproxResults.txt", std::ios::app);
-
-		aproxFileResults << data << endl;
-		aproxFileResults.close();
-	}
-	catch (exception e)
-	{
-		aproxFileResults.close();
-	}
+	aproxResults.push_back(data);
 
 }
 
@@ -166,7 +142,7 @@ void dynamic(const BackpackProblem & backpackProblem){
 	for (int i = 0; i < 10; i++)
 	{
 		dynamicPR.dynamicAlgorithm();
-		dynamicSaveResults(dynamicPR.results());
+		//dynamicSaveResults(dynamicPR.results());
 	}
 	auto end_time = chrono::high_resolution_clock::now();
 
@@ -184,7 +160,7 @@ void aprox(const BackpackProblem & backpackProblem){
 	for (int i = 0; i < 10; i++)
 	{
 		unsigned int result = aproxPR.approxAlgorithm();
-		aproxSaveResults(to_string(result));
+		//aproxSaveResults(to_string(result));
 	}
 	auto end_time = chrono::high_resolution_clock::now();
 
@@ -195,6 +171,11 @@ void aprox(const BackpackProblem & backpackProblem){
 	//aproxTimes.push_back(duration);
 }
 
+void saveToFiles()
+{
+	//TODO: add saving to files
+}
+
 void noThreads(BackpackProblem bp)
 {
 	auto start_time = chrono::high_resolution_clock::now();
@@ -202,6 +183,7 @@ void noThreads(BackpackProblem bp)
 	for (int i = 0; i < 10; i++)
 	{
 		bp.bruteForce();
+		bruteResults.push_back(bp.results());
 	}
 
 	auto end_time = chrono::high_resolution_clock::now();
@@ -209,29 +191,34 @@ void noThreads(BackpackProblem bp)
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 
 	int bruteNoThreads = duration / 10;
+	bruteTimes.push_back(bruteNoThreads);
 	
 	start_time = chrono::high_resolution_clock::now();
 
 	for (int i = 0; i < 10; i++){
 		bp.dynamicAlgorithm();
+		dynamicResults.push_back(bp.results());
 	}
 
 	end_time = chrono::high_resolution_clock::now();
 	duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 	
 	int dynamicNoThreads = duration / 10;
+	dynamicTimes.push_back(dynamicNoThreads);
 
 	start_time = chrono::high_resolution_clock::now();
 
 	for (int i = 0; i < 10; i++)
 	{
-		bp.approxAlgorithm();
+		int result = bp.approxAlgorithm();
+		aproxResults.push_back(to_string(result));
 	}
 
 	end_time = chrono::high_resolution_clock::now();
 	duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-
+	
 	int aproxNoThreads = duration / 10;
+	aproxTimes.push_back(aproxNoThreads);
 
 	cout << "\nCzas wykonywania algorytmu bruteforce bez watkow: " << bruteNoThreads << endl;
 	cout << "Czas wykonywania algorytmu dynamicznego bez watkow: " << dynamicNoThreads << endl;
@@ -314,14 +301,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	std::thread aproxThread1(aprox, bp);
 	std::thread aproxThread2(aprox, bp);
 	std::thread aproxThread3(aprox, bp);
-	//std::thread aproxThread4(aprox, bp);
-	//std::thread aproxThread5(aprox, bp);
-
-	/*
-	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-
-	auto duration =  std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-		*/
 	
 	bruteThread1.join();
 	bruteThread2.join();
@@ -349,8 +328,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	aproxThread1.join();
 	aproxThread2.join();
 	aproxThread3.join();
-	/*aproxThread4.join();
-	aproxThread5.join();*/
+
 
 	finalCalulations(bp);
 
