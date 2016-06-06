@@ -10,6 +10,7 @@
 #include <condition_variable>
 #include <memory>
 #include <vector>
+#include <iostream>
 
 
 std::condition_variable threads_working;
@@ -123,7 +124,7 @@ void brute(const BackpackProblem & backpackProblem){
 	for (int i = 0; i < 10; i++)
 	{
 		brutePR.bruteForce();
-		bruteSaveResults(brutePR.results());
+		//bruteSaveResults(brutePR.results());
 	}
 
 	auto end_time = chrono::high_resolution_clock::now();
@@ -131,7 +132,8 @@ void brute(const BackpackProblem & backpackProblem){
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 
 	//bruteTimes.push_back(duration);
-	bruteSave(duration);
+	//bruteSave(duration);
+	bruteTimes.push_back(duration);
 	threadFinished();
 
 }
@@ -148,7 +150,8 @@ void dynamic(const BackpackProblem & backpackProblem){
 
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 
-	dynamicSave(duration);
+	//dynamicSave(duration);
+	dynamicTimes.push_back(duration);
 	threadFinished();
 	//dynamicTimes.push_back(duration);
 }
@@ -166,64 +169,54 @@ void aprox(const BackpackProblem & backpackProblem){
 
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 
-	aproxSave(duration);
+	//aproxSave(duration);
 	threadFinished();
-	//aproxTimes.push_back(duration);
+	aproxTimes.push_back(duration);
 }
 
-void saveToFiles()
-{
-	//TODO: add saving to files
-}
 
 void noThreads(BackpackProblem bp)
 {
+
+	cout << "\n\nAlgorytmy wykonywane sekwencyjne: ";
 	auto start_time = chrono::high_resolution_clock::now();
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 100; i++)
 	{
 		bp.bruteForce();
 		bruteResults.push_back(bp.results());
 	}
 
 	auto end_time = chrono::high_resolution_clock::now();
-
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 
-	int bruteNoThreads = duration / 10;
-	bruteTimes.push_back(bruteNoThreads);
-	
-	start_time = chrono::high_resolution_clock::now();
+	cout << "\n1. Bruteforce: " << duration << endl;
 
-	for (int i = 0; i < 10; i++){
+	start_time = chrono::high_resolution_clock::now();
+	for (int i = 0; i < 100; i++){
 		bp.dynamicAlgorithm();
 		dynamicResults.push_back(bp.results());
 	}
-
 	end_time = chrono::high_resolution_clock::now();
 	duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-	
-	int dynamicNoThreads = duration / 10;
-	dynamicTimes.push_back(dynamicNoThreads);
+
+	cout << "2. Programowanie dynamiczne: " << duration << endl;
 
 	start_time = chrono::high_resolution_clock::now();
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 30; i++)
 	{
 		int result = bp.approxAlgorithm();
 		aproxResults.push_back(to_string(result));
 	}
 
+	cout << "3. Algorytm aproksymacyjny: " << duration << endl;
+
 	end_time = chrono::high_resolution_clock::now();
 	duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 	
-	int aproxNoThreads = duration / 10;
-	aproxTimes.push_back(aproxNoThreads);
-
-	cout << "\nCzas wykonywania algorytmu bruteforce bez watkow: " << bruteNoThreads << endl;
-	cout << "Czas wykonywania algorytmu dynamicznego bez watkow: " << dynamicNoThreads << endl;
-	cout << "Czas wykonywania algorytmu aporksymacyjnego bez watkow: " << aproxNoThreads << endl;
-	system("PAUSE");
+	//std::cout << "\nCzas wykonywania zadan bez watkow: " << duration << " ms" << std::endl;
+	std::system("PAUSE");
 }
 
 
@@ -234,36 +227,42 @@ void finalCalulations(BackpackProblem bp){
 		return threads == 0;
 	});
 
-	int bruteTime = 0;
-	int dynamicTime = 0;
-	int aproxTime = 0;
+	cout << "Czasy wykonywania watkow (w ms): " << endl;
+	
+	long long maxTime = 0;
+	long long maxBrute = 0;
+	long long maxDynamic = 0;
+	long long maxAprox = 0;
 
 	for (int i = 0; i < bruteTimes.size(); i++){
-		bruteTime += bruteTimes[i];
+		
+		if (bruteTimes[i] > maxTime){
+			maxTime = bruteTimes[i];
+			maxBrute = bruteTimes[i];
+		}
 	}
-
+	cout << "1. Bruteforce: " << maxBrute << endl;;
+	
 	for (int i = 0; i < dynamicTimes.size(); i++){
-		dynamicTime += dynamicTimes[i];
+	
+		if (dynamicTimes[i] > maxTime){
+			maxTime = dynamicTimes[i];
+			maxDynamic = dynamicTimes[i];
+		}
 	}
+	cout << "2. Programowanie dynamiczne: " << maxDynamic << endl;;
 
+	
 	for (int i = 0; i < aproxTimes.size(); i++){
-		aproxTime += aproxTimes[i];
+		//cout << aproxTimes[i] << " ";
+		if (aproxTimes[i] > maxTime){
+			maxTime = aproxTimes[i];
+			maxAprox = aproxTimes[i];
+		}
 	}
+	cout << "3. Algorytm aproksymacyjny: " << maxAprox << endl;
 
-	bruteTime /= bruteTimes.size();
-	bruteTime /= 10;
-
-	dynamicTime /= dynamicTimes.size();
-	dynamicTime /= 10;
-
-	aproxTime /= aproxTimes.size();
-	aproxTime /= 10;
-
-	cout << "Czas wykonywania algorytmu bruteforce na watkach: " << bruteTime << endl;
-	cout << "Czas wykonywania algorytmu dynamicznego na watkach: " << dynamicTime << endl;
-	cout << "Czas wykonywania algorytmu aporksymacyjnego na watkach: " << aproxTime << endl;
-	system("PAUSE");
-
+	//std::cout << "Czas wykonywania algorytmow z watkami: " << maxTime << " ms" << std::endl;
 	noThreads(bp);
 	
 }
@@ -324,11 +323,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	dynamicThread9.join();
 	dynamicThread10.join();
 
-
 	aproxThread1.join();
 	aproxThread2.join();
 	aproxThread3.join();
-
 
 	finalCalulations(bp);
 
