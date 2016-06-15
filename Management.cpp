@@ -28,6 +28,84 @@ std::vector<long long> aproxTimes;
 
 int threads;
 int tasks = 10;
+int totalTasks;
+
+long long maxBrute = 0;
+long long maxDynamic = 0;
+long long maxAprox = 0;
+
+long long seqBrute = 0;
+long long seqDynamic = 0;
+long long seqAprox = 0;
+
+void saveBrute(){
+	fstream file;
+
+	try {
+		file.open("bruteTimes.txt", std::ios::app);
+
+		file << totalTasks << " " << tasks << " " << maxBrute << " " << seqBrute << endl;
+
+		file.close();
+	}
+	catch (exception e)
+	{
+		cout << "Nie uda³o sie zapisaæ do pliku!";
+		file.close();
+	}
+}
+
+void saveBruteResults(std::string result)
+{
+	fstream file;
+
+	try {
+		file.open("bruteResults.txt", std::ios::app);
+
+		file << result << endl;
+
+		file.close();
+	}
+	catch (exception e)
+	{
+		cout << "Nie uda³o sie zapisaæ do pliku!";
+		file.close();
+	}
+}
+
+void saveDynamic(){
+	fstream file;
+
+	try {
+		file.open("dynamicTimes.txt", std::ios::app);
+
+		file << totalTasks << " " << tasks << " " << maxDynamic << " " << seqDynamic << endl;
+
+		file.close();
+	}
+	catch (exception e)
+	{
+		cout << "Nie uda³o sie zapisaæ do pliku!";
+		file.close();
+	}
+}
+
+void saveAprox(){
+	fstream file;
+
+	try {
+		file.open("aproxTimes.txt", std::ios::app);
+
+		file << totalTasks << " " << tasks << " " << maxAprox << " " << seqAprox << endl;
+
+		file.close();
+	}
+	catch (exception e)
+	{
+		cout << "Nie uda³o sie zapisaæ do pliku!";
+		file.close();
+	}
+}
 
 void threadFinished()
 {
@@ -38,7 +116,6 @@ void threadFinished()
 		threads_working.notify_one();
 	}
 }
-
 
 void brute(const BackpackProblem & backpackProblem){
 	BackpackProblem brutePR(backpackProblem);
@@ -96,41 +173,43 @@ void noThreads(BackpackProblem bp)
 	cout << "\n\nAlgorytmy wykonywane sekwencyjne: ";
 	auto start_time = chrono::high_resolution_clock::now();
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < totalTasks; i++)
 	{
 		bp.bruteForce();
 	}
 
 	auto end_time = chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
-
+	seqBrute = duration;
 	cout << "\n1. Bruteforce: " << duration << " microseconds" << endl;
 
 
 	auto start_time2 = chrono::high_resolution_clock::now();
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < totalTasks; i++)
 	{
 		bp.dynamicAlgorithm();
 	}
 	auto end_time2 = chrono::high_resolution_clock::now();
 	auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(end_time2 - start_time2).count();
-
+	seqDynamic = duration2;
 	cout << "2. Programowanie dynamiczne: " << duration2 << " microseconds"<< endl;
-
 
 
 	auto start_time3 = chrono::high_resolution_clock::now();
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < totalTasks; i++)
 	{
 		bp.approxAlgorithm();
 	}
 	auto end_time3 = chrono::high_resolution_clock::now();
 	auto duration3 = std::chrono::duration_cast<std::chrono::microseconds>(end_time3 - start_time3).count();
-
+	seqAprox = duration3;
 	cout << "3. Algorytm aproksymacyjny: " << duration3 << " microseconds" << endl;
 
-	std::system("PAUSE");
+	saveBrute();
+	saveAprox();
+	saveDynamic();
+
 }
 
 void finalCalulations(BackpackProblem bp){
@@ -143,10 +222,6 @@ void finalCalulations(BackpackProblem bp){
 	cout << "Ilosc zadan dla kazdego algorytmu: " << tasks * 10 << endl;
 	cout << "Czasy wykonywania watkow: " << endl;
 	
-	long long maxBrute = 0;
-	long long maxDynamic = 0;
-	long long maxAprox = 0;
-
 	for (int i = 0; i < bruteTimes.size(); i++){
 		
 		if (bruteTimes[i] > maxBrute){
@@ -171,6 +246,9 @@ void finalCalulations(BackpackProblem bp){
 	}
 	cout << "3. Algorytm aproksymacyjny: " << maxAprox << " mikrosekund " << endl;
 
+
+	bp.bruteForce();
+	saveBruteResults(bp.results());
 	noThreads(bp);
 	
 }
@@ -181,6 +259,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	bp.readFromFile();
 
 	threads = 30;
+	totalTasks = tasks * 10;
 
 	std::vector<std::thread *> bruteThreads(tasks);
 	std::vector<std::thread *> dynamicThreads(tasks);
@@ -189,19 +268,16 @@ int _tmain(int argc, _TCHAR* argv[])
 	for (int i = 0; i < dynamicThreads.size(); i++)
 	{
 		dynamicThreads[i] = new std::thread(dynamic, bp);
-		//dynamicThreads[i]->join();
 	}
 
 	for (int i = 0; i < bruteThreads.size(); i++)
 	{
 		bruteThreads[i] = new std::thread(brute, bp);
-		//bruteThreads[i]->join();
 	}
 
 	for (int i = 0; i < aproxThreads.size(); i++)
 	{
 		aproxThreads[i] = new std::thread(aprox, bp);
-		//aproxThreads[i]->join();
 	}
 
 	finalCalulations(bp);

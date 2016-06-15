@@ -162,7 +162,7 @@ BackpackProblem::~BackpackProblem()
 
 unsigned int BackpackProblem::approxAlgorithm()
 {
-
+	string result = "";
 	unsigned int pMax = maxValue();
 
 	double scaleK = (0.8 * pMax) / amount_elements;
@@ -230,6 +230,8 @@ unsigned int BackpackProblem::approxAlgorithm()
 			if (bestMatrix[k][y] <= bag.get_max_capacity()) profit = y;
 		}
 	} while (y < amount_elements * pMax);
+	
+	result += to_string(profit);
 	
 	return profit;
 

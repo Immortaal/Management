@@ -43,6 +43,7 @@ string Backpack::results()
 	result += "\nAktualna waga plecaka to  " + to_string(this->curr_capacity);
 	result += "\nSuma wartosci w plecaku to " + to_string(this->values);
 	result += "\nIlosc przedmiotow w plecaku to " + to_string(this->collection.size());
+	result += "\n==========================================";
 	return result;
 }
 
