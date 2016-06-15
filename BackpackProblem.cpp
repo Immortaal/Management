@@ -163,14 +163,11 @@ BackpackProblem::~BackpackProblem()
 unsigned int BackpackProblem::approxAlgorithm()
 {
 
-	unsigned int pMax = 0;
+	unsigned int pMax = maxValue();
 
-	for (int i = 0; i < amount_elements; i++)
-	{
-		if (elements[i].getValue() > pMax) pMax = elements[i].getValue();
-	}
+	double scaleK = (0.8 * pMax) / amount_elements;
 
-	double scaleK = (0.1 * pMax) / amount_elements;
+	if (scaleK < 1) scaleK = 1;
 
 	Element *scaledCollection = new Element[amount_elements];
 
@@ -205,13 +202,17 @@ unsigned int BackpackProblem::approxAlgorithm()
 	do
 	{
 		y++;
-		for (int k = 1; k <= amount_elements; k++)
+		for (int k = 1; k < amount_elements; k++)
 		{
 			Element element = scaledCollection[k - 1];
 			pk = element.getValue();
 			wk = element.getSize();
 
-			if (y - element.getValue() < 0 || bestMatrix[k - 1][y - pk] == UINT_MAX)
+			if (y - pk < 0)
+			{
+				bestMatrix[k][y] = bestMatrix[k - 1][y];
+			}
+			else if (bestMatrix[k - 1][y - pk] == UINT_MAX)
 			{
 				bestMatrix[k][y] = bestMatrix[k - 1][y];
 			}
@@ -229,8 +230,8 @@ unsigned int BackpackProblem::approxAlgorithm()
 			if (bestMatrix[k][y] <= bag.get_max_capacity()) profit = y;
 		}
 	} while (y < amount_elements * pMax);
-
-	return (unsigned int)(profit * scaleK);
+	
+	return profit;
 
 }
 
@@ -270,4 +271,16 @@ void BackpackProblem::bruteForce()
 		}
 		tmp = tmp << 1; //przesuwamy maske
 	}
+}
+
+unsigned int BackpackProblem::maxValue()
+{
+	unsigned int pMax = 0;
+
+	for (int i = 0; i < amount_elements; i++)
+	{
+		if (elements[i].getValue() > pMax) pMax = elements[i].getValue();
+	}
+
+	return pMax;
 }

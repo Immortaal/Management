@@ -7,6 +7,7 @@
 #include <iostream>
 #include <time.h>
 #include <string>
+#include <vector>
 
 
 using namespace std;
@@ -19,6 +20,9 @@ private:
 	Backpack bag;
 	Element* elements; // tablica wszystkich elementow
 	unsigned amount_elements; // liczba elementow
+
+	unsigned int maxValue();
+
 public:
 	BackpackProblem();
 	BackpackProblem(unsigned int s, unsigned int n);
